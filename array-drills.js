@@ -4,45 +4,55 @@ const Memory = require('./memory.js');
 
 class Array {
   constructor() {
-    this.length = 0; // this.length of array is 0
-    this.ptr = Memory.allocate(this.length); // this.ptr points to the start last operation finished
+    this.length = 0;
+    this._capacity = 0;
+    this.ptr = Memory.allocate(this.length);
 
   }
 
-  // pass in a value to push to the array - done
-  // increase this.length by 1 - done
-  // move this.ptr - done
   push(value) {
     this._resize(this.length + 1);
     Memory.set(this.ptr, value);
     this.length++;
   }
 
-  // increase size of this.length += size
-  // possibly change the value of this.pointer?
   _resize(size) {
     const oldPtr = this.ptr;
-
-
-    // if there's not enough contiguous space,
-    // copy this array to another place
+    this.ptr = Memory.allocate(size);
     if (this.ptr === null) {
-        
+      throw new Error('Out of memory');
     }
-
-    // Memory.copy(this.ptr, oldPtr, size)
+    Memory.copy(this.ptr, oldPtr, this.length);
+    Memory.free(oldPtr);
   }
 
   get(index) {
-
+    if (index < 0 || index >= this.length) {
+      throw new Error('Index error');
+    }
+    return Memory.get(this.ptr + index);
   }
 
   pop() {
-
+    if (this.length === 0) {
+      throw new Error('Index error');
+    }
+    const value = Memory.get(this.ptr + this.length - 1);
+    this.length--;
+    return value;
   }
   
   insert(index, value) {
+    if (index < 0 || index >= this.length) {
+      throw new Error('Index error');
+    }
+    if (this.length >= this._capacity) {
+      this._resize((this.length+ 1) * Array.SIZE_RATIO);
+    }
 
+    Memory.copy(this.ptr + index + 1, this.ptr + index, this.length - index);
+    Memory.set(this.ptr + index, value);
+    this.length++;
   }
 
   remove(index) {
@@ -50,4 +60,4 @@ class Array {
   }
 
 }
-
+Array.SIZE_RATIO = 3;
