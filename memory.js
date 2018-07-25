@@ -3,6 +3,7 @@
 class Memory {
   constructor() {
     this.memory = new Float64Array(1024);
+    // starting of an address
     this.head = 0;
   }
 
@@ -11,9 +12,13 @@ class Memory {
       return null;
     }
 
+    // setting start to 0
     let start = this.head;
 
+
     this.head += size;
+
+    // is the beginning of the memory 
     return start;
   }
 
