@@ -6,7 +6,6 @@ class Memory {
     // starting of an address
     this.head = 0;
   }
-
   allocate(size) {
     if (this.head + size > this.memory.length) {
       return null;
@@ -41,13 +40,12 @@ class Memory {
     }
   }
 
-  get(ptr) {
-    return this.memory[ptr];
+  get(ptr) { // 3
+    return this.memory[ptr]; // this.memory[3]
   }
 
-  set(ptr, value) {
-    this.memory[ptr] = value;
+  set(ptr, value) { // value -> 'tauhida'
+    this.memory[ptr] = value; // this.memory[3 + 1] = 'tauhida'
   }
 }
-
 module.exports = Memory;
