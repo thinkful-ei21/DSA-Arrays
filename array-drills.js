@@ -1,6 +1,7 @@
 'use strict';
 
-const Memory = require('./memory.js');
+const mem = require('./memory.js');
+const Memory = new mem();
 
 class Array {
   constructor() {
@@ -11,8 +12,10 @@ class Array {
   }
 
   push(value) {
-    this._resize(this.length + 1);
-    Memory.set(this.ptr, value);
+    if (this.length >= this._capacity) {
+      this._resize((this.length + 1) * Array.SIZE_RATIO);
+    }
+    Memory.set(this.ptr + this.length, value);
     this.length++;
   }
 
@@ -24,6 +27,7 @@ class Array {
     }
     Memory.copy(this.ptr, oldPtr, this.length);
     Memory.free(oldPtr);
+    this._capacity = size;
   }
 
   get(index) {
@@ -56,8 +60,36 @@ class Array {
   }
 
   remove(index) {
-
+    if (index < 0 || index >= this.length) {
+      throw new Error('Index error');
+    }
+    Memory.copy(this.ptr + index, this.ptr + index + 1, this.length - index - 1);
+    this.length--;
   }
 
 }
 Array.SIZE_RATIO = 3;
+
+const main = () => {
+  Array.SIZE_RATIO = 3;
+  let arr = new Array();
+
+  arr.push(3);
+  arr.push(15);
+  arr.push(19);
+  arr.push(45);
+  arr.push(10);
+
+  // What is the length
+  // 5
+
+  // Capacity?
+  // 12
+
+  // Memory address of your array?
+  // 3
+
+  console.log(arr);
+};
+
+main();

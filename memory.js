@@ -15,7 +15,6 @@ class Memory {
     // setting start to 0
     let start = this.head;
 
-
     this.head += size;
 
     // is the beginning of the memory 
